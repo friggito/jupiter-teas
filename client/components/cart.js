@@ -27,7 +27,7 @@ class Cart extends Component {
 
           <div className="row justify-content-center">
             <div className="col-sm-12 col-md-6">
-              {cart.orderItems.map(item, idx => (
+              {cart.orderItems.map((item, idx) => (
                 <div className="item" key={idx}>
                   <a>
                     <img

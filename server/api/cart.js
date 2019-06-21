@@ -10,11 +10,8 @@ router.post('/item/:productId', async (req, res, next) => {
       const orderId = req.session.cart.orderId
       const product = await Product.findById(productId)
       const orderItem = await OrderItem.create({productId, quantity, orderId})
-      req.session.cart.orderItems.push({
-        product,
-        quantity,
-        orderId
-      })
+      orderItem.product = product
+      req.session.cart.orderItems.push(orderItem)
       res.json(orderItem)
     } else {
       const product = await Product.findById(productId)
@@ -34,18 +31,12 @@ router.post('/item/:productId', async (req, res, next) => {
 router.put('/item/:productId', async (req, res, next) => {
   try {
     if (req.user) {
-      console.log(
-        'REQ.BODY.ISEXISTITEM.PRODUCT.ID ===>',
-        req.body.isExistItem.product.id
-      )
-
       const orderItem = await OrderItem.findOne({
         where: {
           productId: req.body.isExistItem.product.id
         }
       })
       orderItem.dataValues.quantity += req.body.quantity
-      // HERE!!
       req.session.cart.orderItems = []
         .concat(req.session.cart.orderItems)
         .filter(oItem => oItem.id !== orderItem.id)
