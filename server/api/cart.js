@@ -54,6 +54,23 @@ router.put('/item/:productId', async (req, res, next) => {
   }
 })
 
+router.delete('/item/:productId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      const orderItem = await OrderItem.findOne({
+        where: {
+          productId: req.body.isExistItem.product.id
+        }
+      })
+      orderItem.delete()
+    }
+    req.cart = req.cart.filter(item => item.productId !== orderItem.productId)
+    res.json(req.cart)
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.get('/', async (req, res, next) => {
   try {
     if (!req.session.cart) {
